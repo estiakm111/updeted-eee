@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>I Love You Mithela — Ohm's Law, KVL, KCL, Superposition</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1f5f9;--card:#fff;--ink:#1e293b;--mut:#64748b;--pri:#2563eb;--line:#e2e8f0}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Hind Siliguri','Noto Sans Bengali','Kalpurush','SolaimanLipi',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7}
+header{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:16px}
+header h1{margin:0;font-size:1.3rem}
+header p{margin:2px 0 0;opacity:.9;font-size:.92rem}
+nav{display:flex;gap:6px;flex-wrap:wrap;padding:8px 12px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+nav a{padding:7px 12px;border-radius:999px;text-decoration:none;color:var(--ink);background:#eef2ff;font-size:.92rem;font-weight:500}
+nav a.act{background:var(--pri);color:#fff}
+main{max-width:1000px;margin:0 auto;padding:12px}
+.card{background:var(--card);border-radius:14px;padding:16px;margin:12px 0;box-shadow:0 1px 4px rgba(15,23,42,.08)}
+.hero{border-left:6px solid var(--pri)}
+.hero h2{margin:4px 0 0;font-size:1.3rem}
+.hero .en{color:var(--mut);font-weight:500}
+.no{display:inline-block;background:var(--pri);color:#fff;border-radius:8px;padding:0 10px;font-weight:700}
+h3{margin:14px 0 6px;font-size:1.08rem}
+.tip{background:#eff6ff;border-radius:8px;padding:8px 12px;margin:6px 0;font-size:.95rem}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+button,select{font:inherit;padding:7px 12px;border-radius:9px;border:1px solid #cbd5e1;background:#fff;cursor:pointer}
+button:hover{background:#f1f5f9}
+button.pri{background:var(--pri);color:#fff;border-color:var(--pri)}
+button.pri:hover{background:#1d4ed8}
+.stage{background:#f8fafc;border:1px solid var(--line);border-radius:12px;overflow:auto}
+svg{display:block;width:100%;height:auto;min-width:560px;user-select:none}
+svg text{font-family:inherit}
+.wire .hit{fill:none;stroke:transparent;stroke-width:24;cursor:pointer;pointer-events:stroke}
+.wire .vis{fill:none;stroke:var(--c);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.wire.off .vis{stroke:#94a3b8;stroke-dasharray:2 10}
+.wire.hint .vis{stroke:#f59e0b;stroke-dasharray:7 7;animation:dash .8s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-14}}
+.wire .tag circle{fill:#fff;stroke:#475569;stroke-width:1.5;cursor:pointer}
+.wire.on .tag circle{fill:#bbf7d0;stroke:#16a34a}
+.wire .tag text{font-size:12px;font-weight:700;text-anchor:middle;fill:#1e293b;pointer-events:none}
+.wire:hover .vis{stroke-width:7}
+.mk{font-size:14px;font-weight:700;text-anchor:middle}
+.mv{font-size:12.5px;font-weight:600;text-anchor:middle;fill:#0f172a}
+.pl{font-size:11px;fill:#cbd5e1;text-anchor:middle}
+.pv{font-size:18px;font-weight:700;fill:#4ade80;text-anchor:middle}
+.pm{font-size:16px;font-weight:700}
+.rl{font-size:13px;font-weight:600;fill:#78350f;text-anchor:middle}
+.sm{font-size:12px;fill:#475569;text-anchor:middle}
+.probe{cursor:pointer}
+.status .m{padding:8px 12px;border-radius:8px;margin:6px 0;font-size:.95rem}
+.m.ok{background:#dcfce7;color:#166534}.m.warn{background:#fef3c7;color:#92400e}.m.bad{background:#fee2e2;color:#991b1b}.m.info{background:#e0f2fe;color:#075985}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-top:10px}
+.ctl{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.ctl input[type=range]{width:100%}
+.ctl label{display:block}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:center}
+th{background:#eef2ff}
+.tbl{overflow:auto}
+td.l{text-align:left}
+canvas{max-width:100%;height:auto;border:1px solid var(--line);border-radius:10px;margin-top:8px;background:#fff}
+.eq{background:#fefce8;border:1px dashed #eab308;border-radius:8px;padding:8px;text-align:center;font-size:1.1rem;font-weight:600}
+.doc ol li,.doc ul li{margin:5px 0}
+table.eff td:first-child{text-align:left;font-weight:600;width:36%}
+table.eff td{text-align:left}
+details{background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin:6px 0}
+summary{cursor:pointer;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.grid a.c{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.grid a.c:hover{border-color:var(--pri);transform:translateY(-2px)}
+.grid a.c b{color:var(--pri)}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;z-index:50;max-width:90%}
+#toast.show{opacity:1}
+footer{text-align:center;color:var(--mut);font-size:.85rem;padding:18px}
+</style>
+</head>
+<body>
+<header><h1>⚡ EEE ল্যাব ফাইনাল — ❤️I Love You Mithela❤️</h1><p>Ohm's Law • KVL • KCL • Superposition Theorem — তার জোড়া লাগিয়ে, মিটার পড়ে, বাস্তবের মতো অনুশীলন</p></header>
+<nav>
+<a href="#home" data-r="home">🏠 হোম</a>
+<a href="#ohm" data-r="ohm">১. ওহমের সূত্র</a>
+<a href="#kvl" data-r="kvl">২. KVL</a>
+<a href="#kcl" data-r="kcl">৩. KCL</a>
+<a href="#sup" data-r="sup">৪. সুপারপজিশন</a>
+<a href="#web" data-r="web">🌐 অনলাইন সাইট</a>
+</nav>
+<main id="page"></main>
+<footer>শিক্ষামূলক সিমুলেশন — আসল ল্যাবে ইনস্ট্রাক্টরের নির্দেশ ও নিরাপত্তা নিয়ম মেনে কাজ করবে।</footer>
+<div id="toast"></div>
+
+<script>
+/* ---------- helpers ---------- */
+const bnD=s=>String(s).replace(/\d/g,d=>'০১২৩৪৫৬৭৮৯'[d]);
+const fI=i=>{const m=i*1000;return m>=1000?(m/1000).toFixed(3)+' A':m.toFixed(1)+' mA'};
+const fV=v=>v.toFixed(2)+' V';
+const fR=r=>r>=1000?(r/1000)+' kΩ':r+' Ω';
+const RS=[100,220,330,470,1000,2200];
+const opts=(a,sel)=>a.map(r=>`<option value="${r}" ${r==sel?'selected':''}>${fR(r)}</option>`).join('');
+let _tt;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2800)}
+
+/* chain solver: series elements from supply(+) to supply(-) */
+function solve(els,E){
+  const n=els.length;
+  const closed=els.every(e=>e.t!=='w'||e.on);
+  const R=els.reduce((s,e)=>s+(e.t==='r'?e.R:0),0);
+  const I=closed&&R>0?E/R:0;
+  const pot=new Array(n+1).fill(null);
+  if(closed){pot[0]=E;for(let i=0;i<n;i++)pot[i+1]=pot[i]-(els[i].t==='r'?I*els[i].R:0);}
+  else{
+    pot[0]=E;
+    for(let i=0;i<n;i++){if(els[i].t!=='w'||els[i].on)pot[i+1]=pot[i];else break;}
+    pot[n]=0;
+    for(let i=n-1;i>=0;i--){if(els[i].t!=='w'||els[i].on){if(pot[i]===null)pot[i]=pot[i+1];}else break;}
+  }
+  return {closed,I,pot,R};
+}
+
+/* ---------- SVG parts ---------- */
+function W(st,id,num,d,col,lx,ly){
+  const on=st.w[id];
+  return `<g class="wire ${on?'on':'off'}${st.hint&&!on?' hint':''}" data-id="${id}"><title>তার ${bnD(num)} — ক্লিক করে জোড়া/খোলো</title><path class="hit" d="${d}"/><path class="vis" d="${d}" style="--c:${col}"/><g class="tag"><circle cx="${lx}" cy="${ly}" r="11"/><text x="${lx}" y="${ly+4}">${bnD(num)}</text></g></g>`;
+}
+function meter(cx,cy,kind,txt,dir,lab){
+  const col=kind==='A'?'#0284c7':'#7c3aed';
+  const t1=dir==='h'?[cx-36,cy]:[cx,cy-36],t2=dir==='h'?[cx+36,cy]:[cx,cy+36];
+  return `<g><circle cx="${cx}" cy="${cy}" r="36" fill="#fff" stroke="${col}" stroke-width="4"/><text x="${cx}" y="${cy-8}" class="mk" fill="${col}">${lab||kind}</text><text x="${cx}" y="${cy+13}" class="mv">${txt}</text><circle cx="${t1[0]}" cy="${t1[1]}" r="5" fill="#dc2626"/><circle cx="${t2[0]}" cy="${t2[1]}" r="5" fill="#111827"/></g>`;
+}
+function supply(x,yt,yb,txt,on,sub,mode){
+  mode=mode||'on';
+  const mid=(yt+yb)/2,h=96,bt=mid-h/2,bb=mid+h/2,op=mode==='on'?1:.3;
+  let ex='';
+  if(mode==='short')ex=`<line x1="${x}" y1="${yt}" x2="${x}" y2="${yb}" stroke="#2563eb" stroke-width="7" stroke-linecap="round"/><text x="${x+54}" y="${mid+5}" style="text-anchor:start" class="pm" fill="#2563eb">শর্ট (তার)</text>`;
+  if(mode==='open')ex=`<line x1="${x-40}" y1="${bt+10}" x2="${x+40}" y2="${bb-10}" stroke="#dc2626" stroke-width="6"/><line x1="${x+40}" y1="${bt+10}" x2="${x-40}" y2="${bb-10}" stroke="#dc2626" stroke-width="6"/>`;
+  return `<g><line x1="${x}" y1="${yt}" x2="${x}" y2="${bt}" stroke="#dc2626" stroke-width="5"/><line x1="${x}" y1="${bb}" x2="${x}" y2="${yb}" stroke="#111827" stroke-width="5"/><g opacity="${op}"><rect x="${x-46}" y="${bt}" width="92" height="${h}" rx="10" fill="#1e293b"/><text x="${x}" y="${bt+22}" class="pl">${sub}</text><text x="${x}" y="${bt+54}" class="pv">${txt}</text><circle cx="${x}" cy="${bt+78}" r="6" fill="${on?'#22c55e':'#475569'}"/></g>${ex}<circle cx="${x}" cy="${yt}" r="6" fill="#dc2626"/><circle cx="${x}" cy="${yb}" r="6" fill="#111827"/><text x="${x+12}" y="${yt+5}" class="pm" fill="#dc2626">+</text><text x="${x+12}" y="${yb+5}" class="pm" fill="#111827">−</text></g>`;
+}
+function zig(x1,y1,x2,y2){
+  const n=6,dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L,nx=-uy,ny=ux,lead=10;
+  const pts=[[x1,y1],[x1+ux*lead,y1+uy*lead]];
+  const body=L-2*lead;
+  for(let i=0;i<n;i++){const t=lead+body*(i+.5)/n,s=(i%2?1:-1)*11;pts.push([x1+ux*t+nx*s,y1+uy*t+ny*s]);}
+  pts.push([x2-ux*lead,y2-uy*lead],[x2,y2]);
+  return pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+}
+function res(x1,y1,x2,y2,label,burn){
+  const hz=y1===y2,cx=(x1+x2)/2,cy=(y1+y2)/2;
+  const lab=hz?`<text x="${cx}" y="${y1+38}" class="rl">${label}</text>`:`<text x="${x1+22}" y="${cy+4}" class="rl" style="text-anchor:start">${label}</text>`;
+  return `<g><polyline points="${zig(x1,y1,x2,y2)}" fill="none" stroke="${burn?'#ef4444':'#b45309'}" stroke-width="${burn?6:4}" stroke-linejoin="round"/>${burn?`<text x="${cx+(hz?0:-34)}" y="${cy-18}" font-size="22">💨</text>`:''}${lab}<circle cx="${x1}" cy="${y1}" r="4" fill="#334155"/><circle cx="${x2}" cy="${y2}" r="4" fill="#334155"/></g>`;
+}
+
+/* ---------- page shell ---------- */
+function docHTML(d){
+  return `<div class="card doc"><h3>📘 তত্ত্ব</h3>${d.theory}
+  <h3>🧰 প্রয়োজনীয় যন্ত্রপাতি</h3><ul>${d.app.map(x=>`<li>${x}</li>`).join('')}</ul>
+  <h3>🪜 ধাপে ধাপে করণীয় (বাস্তব ল্যাবের মতো)</h3><ol>${d.steps.map(x=>`<li>${x}</li>`).join('')}</ol>
+  <h3>🔍 কী করলে কী হয়</h3><div class="tbl"><table class="eff"><tr><th>তুমি যা করবে</th><th>যা ঘটবে</th></tr>${d.eff.map(([a,b])=>`<tr><td>${a}</td><td>${b}</td></tr>`).join('')}</table></div>
+  <h3>⚠️ সতর্কতা ও সাধারণ ভুল</h3><ul>${d.warn.map(x=>`<li>${x}</li>`).join('')}</ul>
+  <h3>🎤 সম্ভাব্য ভাইভা প্রশ্ন</h3>${d.viva.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>`;
+}
+function page(d,controls,data){
+  return `<div class="card hero"><span class="no">${d.no}</span><h2>${d.title}</h2><div class="en">${d.en}</div><p><b>🎯 উদ্দেশ্য:</b> ${d.aim}</p></div>
+  <div class="card"><h3>🔌 সার্কিট — তার জোড়া লাগিয়ে প্র্যাকটিস করো</h3>
+  <div class="tip">👆 যেকোনো <b>তারে ক্লিক/ট্যাপ</b> করলে সেটি জোড়া লাগবে (নম্বর সবুজ হবে); আবার ক্লিক করলে খুলে যাবে। <b>ধূসর ডটেড তার = খোলা</b>। শুরুতে সব তার খোলা — নিচের ধাপ দেখে নিজে জোড়া লাগাও।</div>
+  <div class="toolbar"><button id="bAll">✅ সঠিক সংযোগ দেখাও</button><button id="bNone">🧹 সব তার খোলো</button><button id="bHint">💡 হিন্ট (খোলা তার দেখাও)</button></div>
+  <div class="stage"><svg id="svg" viewBox="0 0 820 440"></svg></div>
+  <div id="status" class="status"></div><div class="controls">${controls}</div></div>
+  <div class="card">${data}</div>${docHTML(d)}`;
+}
+function tools(root,st,update){
+  root.querySelector('#bAll').onclick=()=>{Object.keys(st.w).forEach(k=>st.w[k]=1);update()};
+  root.querySelector('#bNone').onclick=()=>{Object.keys(st.w).forEach(k=>st.w[k]=0);update()};
+  root.querySelector('#bHint').onclick=()=>{st.hint=true;update();setTimeout(()=>{st.hint=false;update()},2500)};
+}
+function paint(root,st,svg,msgs,update){
+  const s=root.querySelector('#svg');s.innerHTML=svg;
+  s.querySelectorAll('.wire').forEach(g=>g.onclick=()=>{st.w[g.dataset.id]=st.w[g.dataset.id]?0:1;update()});
+  root.querySelector('#status').innerHTML=msgs.map(([t,x])=>`<div class="m ${t}">${x}</div>`).join('');
+}
+function plot(cv,pts,xl,yl,slope){
+  const g=cv.getContext('2d'),W=cv.width,H=cv.height,m={l:60,r:18,t:16,b:46};
+  g.clearRect(0,0,W,H);g.fillStyle='#fff';g.fillRect(0,0,W,H);
+  const mx=Math.max(1,...pts.map(p=>p[0]))*1.15,my=Math.max(1,...pts.map(p=>p[1]))*1.15;
+  const X=x=>m.l+x/mx*(W-m.l-m.r),Y=y=>H-m.b-y/my*(H-m.t-m.b);
+  g.font='12px sans-serif';g.strokeStyle='#e2e8f0';g.fillStyle='#64748b';
+  for(let i=0;i<=5;i++){const xv=mx*i/5,yv=my*i/5;
+    g.beginPath();g.moveTo(X(xv),m.t);g.lineTo(X(xv),H-m.b);g.stroke();
+    g.beginPath();g.moveTo(m.l,Y(yv));g.lineTo(W-m.r,Y(yv));g.stroke();
+    g.textAlign='center';g.fillText(xv.toFixed(1),X(xv),H-m.b+16);
+    g.textAlign='right';g.fillText(yv.toFixed(1),m.l-6,Y(yv)+4);}
+  g.strokeStyle='#334155';g.lineWidth=2;g.beginPath();g.moveTo(m.l,m.t);g.lineTo(m.l,H-m.b);g.lineTo(W-m.r,H-m.b);g.stroke();
+  g.fillStyle='#0f172a';g.font='13px sans-serif';g.textAlign='center';g.fillText(xl,(W+m.l)/2,H-8);
+  g.save();g.translate(14,(H-m.b)/2);g.rotate(-Math.PI/2);g.fillText(yl,0,0);g.restore();
+  if(slope&&pts.length){g.strokeStyle='#2563eb';g.lineWidth=2;g.beginPath();g.moveTo(X(0),Y(0));g.lineTo(X(mx),Y(slope*mx));g.stroke();}
+  g.fillStyle='#dc2626';pts.forEach(p=>{g.beginPath();g.arc(X(p[0]),Y(p[1]),5,0,7);g.fill();});
+}
+
+/* ---------- documentation text ---------- */
+const DOC={
+ohm:{no:'পরীক্ষা ১',title:'ওহমের সূত্রের যাচাই (ধ্রুব তাপমাত্রায় DC সার্কিটে)',en:"Verification of Ohm's Law in a DC Circuit at Constant Temperature",
+aim:'ধ্রুব তাপমাত্রায় একটি রোধের দুই প্রান্তের বিভব পার্থক্য (V) ও তার মধ্য দিয়ে প্রবাহিত কারেন্ট (I)-এর অনুপাত V/I = R স্থির কি না তা পরীক্ষা করে ওহমের সূত্র যাচাই করা।',
+theory:`<p><b>ওহমের সূত্র:</b> ধ্রুব তাপমাত্রা ও অন্যান্য ভৌত অবস্থা অপরিবর্তিত থাকলে কোনো পরিবাহীর দুই প্রান্তের বিভব পার্থক্য (V) তার মধ্য দিয়ে প্রবাহিত তড়িৎ প্রবাহের (I) সমানুপাতিক।</p><p class="eq">V ∝ I ⇒ V = I × R ⇒ R = V / I</p><p>R হলো রোধ (একক ওহম, Ω)। তাপমাত্রা স্থির থাকলে R স্থির থাকে, তাই <b>V–I গ্রাফ মূলবিন্দুগামী সরলরেখা</b> হয়। তাপমাত্রা বাড়লে ধাতব পরিবাহীর রোধ বাড়ে — সেজন্য পরীক্ষাটি ধ্রুব তাপমাত্রায় (অল্প কারেন্ট, দ্রুত রিডিং) করতে হয়।</p>`,
+app:['DC পাওয়ার সাপ্লাই (০–১২ V, ভোল্টেজ পরিবর্তনযোগ্য)','রেজিস্টর (১০০ Ω, ২২০ Ω, ৪৭০ Ω, ১ kΩ, ২.২ kΩ — ১/৪ ওয়াট)','DC অ্যামিটার/মিলিঅ্যামিটার (সিরিজে)','DC ভোল্টমিটার (প্যারালালে)','ব্রেডবোর্ড ও সংযোগকারী তার (লাল = +, কালো = −)'],
+steps:['সাপ্লাইয়ের সুইচ <b>OFF</b> করো এবং ভোল্টেজ ০ V-এ রাখো।','<b>তার ১:</b> সাপ্লাইয়ের (+) টার্মিনাল → অ্যামিটারের (+) প্রান্ত।','<b>তার ২:</b> অ্যামিটারের (−) প্রান্ত → রেজিস্টরের উপরের প্রান্ত। (অ্যামিটার সবসময় <b>সিরিজে</b>)','<b>তার ৩:</b> রেজিস্টরের নিচের প্রান্ত → সাপ্লাইয়ের (−) টার্মিনাল। এখন সার্কিট বদ্ধ লুপ হলো।','<b>তার ৪ ও ৫:</b> ভোল্টমিটারের (+) প্রোব রেজিস্টরের উপরের প্রান্তে, (−) প্রোব নিচের প্রান্তে। (ভোল্টমিটার সবসময় <b>প্যারালালে</b>)','সাপ্লাই <b>ON</b> করো। ভোল্টেজ ১ V থেকে ধাপে ধাপে (১, ২, ৩, ৪, ৫ V…) বাড়াও এবং প্রতিবার <b>“রিডিং নাও”</b> চাপো।','প্রতিটি রিডিংয়ে V/I দেখো — মান প্রায় স্থির পাওয়া উচিত। গ্রাফ সরলরেখা হলে ওহমের সূত্র যাচাই হলো।','অন্য রেজিস্টর (১০০ Ω, ৪৭০ Ω) নিয়ে আবার করো এবং গ্রাফের ঢাল কীভাবে বদলায় দেখো। শেষে ভোল্টেজ ০ করে সাপ্লাই OFF করো।'],
+eff:[['ভোল্টেজ বাড়ালে','কারেন্টও একই অনুপাতে বাড়ে (I = V/R) — গ্রাফ সরলরেখা।'],['একই ভোল্টেজে রেজিস্টরের মান বাড়ালে','কারেন্ট কমে যায়; I–V গ্রাফের ঢাল (1/R) কমে।'],['তার ১, ২ বা ৩ খুলে দিলে','সার্কিট খোলা (open circuit) — কারেন্ট ০, অ্যামিটার ০ দেখায়।'],['ভোল্টমিটারের তার ৪/৫ খুলে দিলে','ভোল্টেজ পড়া যায় না (০ দেখায়), কিন্তু অ্যামিটারে কারেন্ট ঠিকই থাকে।'],['ভোল্টেজ অতিরিক্ত বাড়ালে (যেমন ১০০ Ω-এ ৫ V-এর বেশি)','P = V²/R > ০.২৫ W — রেজিস্টর গরম হয়, মান বদলে যায়, শেষে পুড়ে যেতে পারে।'],['“তাপমাত্রা ধ্রুব নয়” টিক দিলে','গরম হয়ে রোধ বাড়ে ⇒ V/I আর স্থির থাকে না, গ্রাফ বেঁকে যায় — এজন্যই “ধ্রুব তাপমাত্রা” শর্তটি জরুরি।']],
+warn:['তার জোড়া বা বদলানোর সময় সাপ্লাই সবসময় OFF রাখো।','অ্যামিটার কখনো লোডের প্যারালালে লাগাবে না — অত্যধিক কারেন্টে মিটার নষ্ট হয়।','পোলারিটি ঠিক রাখো: লাল = (+), কালো = (−)।','মিটারের রেঞ্জ প্রথমে বড় রেখে পরে কমাও।','রিডিং নিয়েই ভোল্টেজ কমাও/দ্রুত রিডিং নাও, যাতে রেজিস্টর গরম না হয়।','রেজিস্টরের পাওয়ার রেটিং (১/৪ W) অতিক্রম করবে না।'],
+viva:[['ওহমের সূত্র কী?','ধ্রুব তাপমাত্রায় পরিবাহীর দুই প্রান্তের বিভব পার্থক্য তার মধ্য দিয়ে প্রবাহিত কারেন্টের সমানুপাতিক: V = IR।'],['অ্যামিটার সিরিজে, ভোল্টমিটার প্যারালালে কেন?','অ্যামিটারের রোধ খুব কম, সিরিজে রাখলে কারেন্ট প্রায় বদলায় না। ভোল্টমিটারের রোধ খুব বেশি, প্যারালালে রাখলে সার্কিট থেকে নগণ্য কারেন্ট টানে।'],['V–I গ্রাফ কেমন হয়?','মূলবিন্দুগামী সরলরেখা; I বনাম V গ্রাফে ঢাল = 1/R।'],['কোন উপাদান ওহমের সূত্র মানে না?','ডায়োড, ট্রানজিস্টর, বাল্বের ফিলামেন্ট, থার্মিস্টর — এগুলো নন-ওহমিক।'],['ধ্রুব তাপমাত্রা কেন দরকার?','তাপমাত্রা বাড়লে রোধ বদলায়, ফলে V/I স্থির থাকে না।']]},
+kvl:{no:'পরীক্ষা ২',title:'কির্শফের ভোল্টেজ সূত্রের (KVL) যাচাই',en:"Verification of Kirchhoff's Voltage Law (KVL)",
+aim:'একটি সিরিজ সার্কিটের বদ্ধ লুপে উৎসের ভোল্টেজ ও রেজিস্টরগুলোর ভোল্টেজ ড্রপ মেপে দেখা যে E = V₁ + V₂ + V₃ (অর্থাৎ ΣV = 0)।',
+theory:`<p><b>KVL:</b> কোনো বদ্ধ লুপে সবগুলো উৎস ও ভোল্টেজ ড্রপের বীজগাণিতিক যোগফল শূন্য।</p><p class="eq">ΣV = 0 ⇒ E − V₁ − V₂ = 0 ⇒ E = V₁ + V₂</p><p>সিরিজে কারেন্ট সর্বত্র সমান: I = E/(R₁+R₂), এবং Vₖ = I·Rₖ = E·Rₖ/(R₁+R₂) (ভোল্টেজ ডিভাইডার)। এটি শক্তির সংরক্ষণ নীতির ফল।</p>`,
+app:['DC পাওয়ার সাপ্লাই','দুটি রেজিস্টর R₁, R₂ (যেমন ১০০ Ω, ২২০ Ω)','অ্যামিটার (সিরিজে)','ভোল্টমিটার/মাল্টিমিটার','ব্রেডবোর্ড ও তার'],
+steps:['সাপ্লাই <b>OFF</b>, ভোল্টেজ ০।','<b>তার ১:</b> সাপ্লাইয়ের (+) → অ্যামিটার; <b>তার ২:</b> অ্যামিটার → R₁-এর বাম প্রান্ত।','<b>তার ৩:</b> R₁-এর ডান প্রান্ত → R₂-এর বাম প্রান্ত।','<b>তার ৪:</b> R₂-এর ডান প্রান্ত → সাপ্লাইয়ের (−)। লুপ সম্পূর্ণ।','সাপ্লাই ON করে ১০ V দাও; অ্যামিটারে কারেন্ট I দেখো।','ভোল্টমিটারের <b>লাল প্রোব</b> বসাতে ছবির ছোট বৃত্তে (সংযোগ বিন্দুতে) ক্লিক করো, তারপর <b>কালো প্রোবের</b> বিন্দুতে ক্লিক করো। R₁-এর বাম (লাল) ও ডান (কালো) ⇒ V₁; একইভাবে V₂; সাপ্লাইয়ের (+) ও (−) এ E। প্রতিটির পর <b>“রিডিং লিখো”</b> চাপো।','ΣV = V₁+V₂ ও E মিলিয়ে দেখো — প্রায় সমান হলে KVL যাচাই হলো। ভোল্টেজ বদলে ২–৩ সারি রিডিং নাও।'],
+eff:[['কোনো তার খুলে দিলে','লুপ খোলা, I = ০, প্রতিটি রেজিস্টরে ভোল্টেজ ড্রপ ০ (খোলা জায়গায় পুরো E পড়ে)।'],['একটি রেজিস্টর বড় করলে','মোট রোধ বাড়ে ⇒ I কমে; তবে বড় রেজিস্টরে ভোল্টেজ ড্রপের ভাগ বেশি হয়। তবু V₁+V₂ = E বজায় থাকে।'],['E বাড়ালে','I ও প্রতিটি Vₖ একই অনুপাতে বাড়ে, E = ΣVₖ অটুট থাকে।'],['প্রোব উল্টো লাগালে (লাল নিচু বিভবে)','ভোল্টমিটার ঋণাত্মক (−) মান দেখায় — লাল প্রোব বেশি ধনাত্মক বিন্দুতে দিতে হয়।'],['প্রোব ভাসমান/খোলা অংশে বসালে','“OL” দেখায় — ঐ বিন্দুর বিভব নির্ধারিত নয়।']],
+warn:['ভোল্টমিটার যে অংশের ভোল্টেজ মাপবে তার <b>প্যারালালে</b> লাগাবে, লুপের মধ্যে সিরিজে নয়।','সংযোগ বদলানোর আগে সাপ্লাই OFF করো।','রেজিস্টরের টলারেন্স (±৫%), মিটারের ত্রুটি ও তারের রোধের কারণে সামান্য অমিল স্বাভাবিক।','রিডিংয়ের সময় একই E রেখো, মাঝখানে বদলিও না।'],
+viva:[['KVL কী?','কোনো বদ্ধ লুপে ভোল্টেজ উৎস ও ভোল্টেজ ড্রপের বীজগাণিতিক যোগফল শূন্য।'],['KVL কোন নীতির উপর নির্ভর করে?','শক্তির সংরক্ষণ নীতি।'],['সিরিজ সার্কিটে কোনটি সমান থাকে?','কারেন্ট।'],['তাত্ত্বিক ও পরীক্ষালব্ধ মানে পার্থক্য কেন?','মিটার ও রেজিস্টরের ত্রুটি, তারের রোধ, পড়ার ভুল।']]},
+kcl:{no:'পরীক্ষা ৩',title:'কির্শফের কারেন্ট সূত্রের (KCL) যাচাই',en:"Verification of Kirchhoff's Current Law (KCL)",
+aim:'প্যারালাল সার্কিটে মূল কারেন্ট ও শাখা কারেন্টগুলো মেপে দেখা যে জংশনে I_T = I₁ + I₂।',
+theory:`<p><b>KCL:</b> কোনো জংশন (নোড) এ প্রবেশকারী কারেন্টের যোগফল = বেরিয়ে যাওয়া কারেন্টের যোগফল (ΣI = 0)। এটি চার্জ সংরক্ষণ নীতির ফল।</p><p class="eq">I_T = I₁ + I₂</p><p>প্যারালালে প্রতিটি শাখায় ভোল্টেজ সমান (E) এবং Iₖ = E/Rₖ। <i>(নোট: সূত্রটির সঠিক নাম Kirchhoff's Current Law — গুস্তাভ কির্শফ; “Bishop's” নয়।)</i></p>`,
+app:['DC পাওয়ার সাপ্লাই','দুটি রেজিস্টর (যেমন ২২০ Ω, ৩৩০ Ω)','তিনটি অ্যামিটার (মূল লাইনে I_T এবং দুই শাখায় একটি করে)','ব্রেডবোর্ড (উপরের ও নিচের বাস রেল) ও তার'],
+steps:['সাপ্লাই <b>OFF</b>, ভোল্টেজ ০।','<b>তার ১:</b> সাপ্লাইয়ের (+) → মূল অ্যামিটার (I_T); <b>তার ২:</b> মূল অ্যামিটার → উপরের বাস (লাল রেল)।','<b>তার ৩:</b> নিচের বাস (ধূসর রেল) → সাপ্লাইয়ের (−)।','দুই শাখায় দুটি করে তার: উপরের বাস → শাখার অ্যামিটার (<b>তার ৪, ৬</b>) এবং রেজিস্টরের নিচ → নিচের বাস (<b>তার ৫, ৭</b>)।','সাপ্লাই ON করে ৫ V দাও। I_T, I₁, I₂ পড়ো এবং <b>“রিডিং নাও”</b> চাপো।','I₁+I₂ বের করে I_T-র সাথে মেলাও। ভোল্টেজ/রেজিস্টর বদলে আরও সারি নাও।'],
+eff:[['একটি শাখার তার খুলে দিলে','ঐ শাখার কারেন্ট ০; বাকিগুলো অপরিবর্তিত; I_T কমে যায় — তবু I_T = বাকি শাখার যোগফল।'],['ছোট রেজিস্টর যে শাখায়','ঐ শাখায় কারেন্ট বেশি (কারেন্ট ডিভাইডার)।'],['E বাড়ালে','সব শাখার কারেন্ট ও I_T আনুপাতিক হারে বাড়ে।'],['মূল তার ১/২/৩ খুললে','কোনো শাখায় কারেন্ট নেই, সব মিটার ০।'],['ছোট R-এ বেশি ভোল্টেজ দিলে','P = E²/R বেশি ⇒ গরম হয়, পুড়ে যাওয়ার ঝুঁকি।']],
+warn:['অ্যামিটার সবসময় সিরিজে — কখনো প্যারালালে নয়।','সংযোগ বদলানোর আগে সাপ্লাই OFF করো।','জংশন (বাস রেল) ঢিলা হলে রিডিং ঠিক আসে না।','রেজিস্টরের পাওয়ার ১/৪ W-এর বেশি হতে দিও না।'],
+viva:[['KCL কী?','কোনো নোডে প্রবেশকারী কারেন্টের যোগফল = বহির্গামী কারেন্টের যোগফল।'],['KCL কোন নীতির ফল?','চার্জ সংরক্ষণ নীতি।'],['প্যারালালে কোনটি সমান থাকে?','প্রতিটি শাখার ভোল্টেজ।'],['কারেন্ট ডিভাইডার বলতে কী বোঝায়?','প্যারালাল শাখাগুলোতে কারেন্ট রোধের ব্যস্তানুপাতে ভাগ হয়: Iₖ ∝ 1/Rₖ।']]},
+sup:{no:'পরীক্ষা ৪',title:'সুপারপজিশন উপপাদ্যের যাচাই',en:'Verification of the Superposition Theorem',
+aim:'দুইটি ভোল্টেজ উৎসযুক্ত সার্কিটে মাঝের শাখার কারেন্ট I₃ আলাদা আলাদা উৎসের কারেন্টের যোগফলের (I₃′ + I₃″) সমান কি না যাচাই করা।',
+theory:`<p><b>সুপারপজিশন উপপাদ্য:</b> একাধিক স্বাধীন উৎসযুক্ত রৈখিক সার্কিটে কোনো শাখার কারেন্ট = প্রতিটি উৎস একা কাজ করলে (বাকিগুলো নিষ্ক্রিয়) ঐ শাখায় যে কারেন্ট হতো তাদের বীজগাণিতিক যোগফল।</p><p class="eq">I₃ = I₃′ (শুধু V₁) + I₃″ (শুধু V₂)</p><p><b>নিষ্ক্রিয় করার নিয়ম:</b> ভোল্টেজ উৎস → <b>শর্ট সার্কিট (তার)</b>; কারেন্ট উৎস → ওপেন সার্কিট। (ভোল্টেজ উৎস খোলা রাখা ভুল!)</p><p>I₃′ = V₁/(R₁ + R₂∥R₃) × R₂/(R₂+R₃), &nbsp; I₃″ = V₂/(R₂ + R₁∥R₃) × R₁/(R₁+R₃)। উপপাদ্যটি শুধু রৈখিক সার্কিটে খাটে এবং <b>পাওয়ারে (P = I²R) প্রযোজ্য নয়</b>।</p>`,
+app:['দুইটি DC সাপ্লাই (V₁, V₂)','তিনটি রেজিস্টর R₁, R₂, R₃','অ্যামিটার (R₃-এর শাখায় সিরিজে)','ব্রেডবোর্ড ও তার, শর্ট করার জন্য জাম্পার তার'],
+steps:['দুই সাপ্লাই <b>OFF</b>, ভোল্টেজ ০।','বাম শাখা: <b>তার ১</b> (V₁ (+) → R₁), <b>তার ২</b> (R₁ → মধ্যবিন্দু N)।','ডান শাখা: <b>তার ৩</b> (V₂ (+) → R₂), <b>তার ৪</b> (R₂ → N)।','মাঝের শাখা: <b>তার ৫</b> (N → অ্যামিটার I₃), <b>তার ৬</b> (R₃ → কমন (−) বাস)। দুই সাপ্লাইয়ের (−) আগে থেকেই কমন বাসে যুক্ত।','<b>ধাপ A — শুধু V₁:</b> V₁ = চালু, V₂ = <b>শর্ট</b> (সাপ্লাই সরিয়ে ঐ জায়গায় তার বসাও)। I₃′ পড়ে “রিডিং নাও”।','<b>ধাপ B — শুধু V₂:</b> V₁ = শর্ট, V₂ = চালু। I₃″ পড়ে রিডিং নাও।','<b>ধাপ C — দুটোই চালু:</b> I₃ পড়ে রিডিং নাও।','দেখো I₃′ + I₃″ ≈ I₃ হয়েছে কি না এবং তাত্ত্বিক মানের সাথে মিলছে কি না। (তিন রিডিংয়ের মাঝে V₁, V₂, R বদলিও না।)'],
+eff:[['ধাপ A-তে V₂ কে “খোলা” করলে','ভুল! ডান শাখা বিচ্ছিন্ন হয়ে যায়, আসল “শর্ট” অবস্থার চেয়ে ভিন্ন I₃ আসে — I₃′ মিলবে না।'],['V₂ কে শর্ট করলে','V₂ = ০ V কিন্তু R₂ থেকে যায় — R₂ ও R₃ প্যারালালে বসে (সঠিক নিয়ম)।'],['দুই সোর্সই শর্ট করলে','কোনো উৎস নেই ⇒ I₃ = ০।'],['দুটোই চালু রাখলে','I₃ = I₃′ + I₃″ (সুপারপজিশন বাস্তবে মিলে যায়)।'],['তার ৫/৬ খুললে','মাঝের শাখা বন্ধ ⇒ I₃ = ০।']],
+warn:['ভোল্টেজ সোর্স নিষ্ক্রিয় করতে <b>শর্ট</b> করো, খোলা (open) নয়।','সাপ্লাই চালু অবস্থায় সার্কিটে হাত দিয়ে তার বদলিও না।','তিনটি রিডিংয়ে V₁, V₂, R একই রাখো।','সুপারপজিশন পাওয়ার হিসাবে খাটে না — শুধু কারেন্ট/ভোল্টেজে।'],
+viva:[['সুপারপজিশন উপপাদ্য কী?','একাধিক উৎসযুক্ত রৈখিক সার্কিটে যেকোনো শাখার কারেন্ট প্রতিটি উৎসের একক অবদানের বীজগাণিতিক যোগফল।'],['ভোল্টেজ ও কারেন্ট উৎস কীভাবে নিষ্ক্রিয় করা হয়?','ভোল্টেজ উৎস শর্ট সার্কিট, কারেন্ট উৎস ওপেন সার্কিট।'],['কোন সার্কিটে খাটে?','রৈখিক (linear) ও দ্বিপাক্ষিক (bilateral) সার্কিটে।'],['পাওয়ারে খাটে না কেন?','P = I²R একঘাত নয় (দ্বিঘাত), তাই যোগ করা যায় না।']]}
+};
+
+/* ---------- 1. OHM ---------- */
+function ohm(root){
+  const st={w:{a:0,b:0,c:0,va:0,vb:0},V:5,R:220,on:true,heat:false,noise:false,rows:[],hint:false};
+  const nm={a:'তার ১',b:'তার ২',c:'তার ৩',va:'তার ৪',vb:'তার ৫'};
+  root.innerHTML=page(DOC.ohm,
+  `<div class="ctl"><label>⚡ সাপ্লাই ভোল্টেজ: <b id="vV"></b></label><input type="range" id="iV" min="0" max="12" step="0.5" value="5"></div>
+   <div class="ctl"><label>🔧 রেজিস্টর R</label><select id="iR">${opts(RS,220)}</select></div>
+   <div class="ctl"><label>🔌 সাপ্লাই সুইচ</label><button id="bP" class="pri"></button></div>
+   <div class="ctl"><label><input type="checkbox" id="cH"> 🌡 তাপমাত্রা ধ্রুব নয় (গরম হয়ে রোধ বাড়ুক)</label></div>
+   <div class="ctl"><label><input type="checkbox" id="cN"> 🎯 মিটারের সামান্য ত্রুটি (±১%) যোগ করো</label></div>`,
+  `<h3>📊 পর্যবেক্ষণ সারণি ও গ্রাফ</h3><div class="toolbar"><button id="rec" class="pri">📥 রিডিং নাও</button><button id="clr">🗑 সারণি মুছো</button></div>
+   <div class="tbl"><table><thead><tr><th>ক্র.</th><th>V (volt)</th><th>I (mA)</th><th>R = V/I (Ω)</th></tr></thead><tbody id="tb"></tbody></table></div>
+   <div id="vd" class="status"></div><canvas id="cv" width="640" height="340"></canvas>`);
+  const q=s=>root.querySelector(s);
+  function calc(){
+    const E=st.on?st.V:0;let Re=st.R;
+    if(st.heat&&E>0)for(let k=0;k<60;k++){const I=E/Re;Re=(Re+st.R*(1+0.6*I*I*st.R))/2;}
+    const els=[{t:'w',on:st.w.a},{t:'a'},{t:'w',on:st.w.b},{t:'r',R:Re},{t:'w',on:st.w.c}];
+    const s=solve(els,E);
+    const V=(st.w.va&&st.w.vb&&s.pot[3]!==null&&s.pot[4]!==null)?s.pot[3]-s.pot[4]:null;
+    return {E,Re,s,P:s.I*s.I*Re,V};
+  }
+  function update(){
+    const c=calc(),s=c.s,burn=c.P>0.25;
+    q('#vV').textContent=st.V.toFixed(1)+' V';
+    q('#bP').textContent=st.on?'🟢 চালু (ON) — বন্ধ করো':'⚫ বন্ধ (OFF) — চালু করো';
+    let o=supply(100,140,280,fV(st.V),st.on,'DC সাপ্লাই');
+    o+=W(st,'a',1,'M100,140 H294','#dc2626',200,140);
+    o+=meter(330,140,'A',s.closed?fI(s.I):'0.0 mA','h');
+    o+=W(st,'b',2,'M366,140 H600 V170','#dc2626',480,140);
+    o+=res(600,170,600,250,'R = '+fR(st.R),burn);
+    o+=W(st,'c',3,'M600,250 V280 H100','#111827',350,280);
+    o+=W(st,'va',4,'M600,160 H745 V174','#7c3aed',680,160);
+    o+=W(st,'vb',5,'M600,262 H745 V246','#7c3aed',680,262);
+    o+=meter(745,210,'V',c.V===null?'0.00 V':fV(c.V),'v');
+    o+=`<text x="400" y="420" class="sm">অ্যামিটার সিরিজে • ভোল্টমিটার রেজিস্টরের প্যারালালে</text>`;
+    const m=[];
+    if(!st.on)m.push(['warn','সাপ্লাই এখন বন্ধ (OFF) — সার্কিটে কোনো কারেন্ট নেই।']);
+    const miss=['a','b','c'].filter(k=>!st.w[k]);
+    if(miss.length)m.push(['bad','সার্কিট খোলা (open circuit)! জোড়া নেই: '+miss.map(k=>nm[k]).join(', ')+' ⇒ কারেন্ট = ০।']);
+    const vm=['va','vb'].filter(k=>!st.w[k]);
+    if(vm.length)m.push(['warn','ভোল্টমিটার ঠিকমতো লাগানো হয়নি ('+vm.map(k=>nm[k]).join(', ')+' খোলা) ⇒ ভোল্টেজ পড়া যাবে না।']);
+    if(s.closed&&st.on&&st.V>0)m.push(['ok',`সার্কিট সম্পূর্ণ ✔ &nbsp; I = V/R = ${c.E.toFixed(1)} / ${c.Re.toFixed(0)} = ${fI(s.I)}`]);
+    if(burn)m.push(['bad',`⚠ রেজিস্টর অতিরিক্ত গরম! P = I²R = ${c.P.toFixed(2)} W (রেটিং ০.২৫ W)। ভোল্টেজ কমাও, নাহলে রেজিস্টর পুড়ে যাবে।`]);
+    if(st.heat&&c.Re>st.R*1.02)m.push(['info',`তাপমাত্রা বেড়ে রোধ ${st.R} Ω থেকে ≈ ${c.Re.toFixed(0)} Ω হয়েছে — V/I আর স্থির নয়।`]);
+    paint(root,st,o,m,update);
+  }
+  q('#iV').oninput=e=>{st.V=+e.target.value;update()};
+  q('#iR').onchange=e=>{st.R=+e.target.value;update()};
+  q('#bP').onclick=()=>{st.on=!st.on;update()};
+  q('#cH').onchange=e=>{st.heat=e.target.checked;update()};
+  q('#cN').onchange=e=>{st.noise=e.target.checked};
+  function table(){
+    q('#tb').innerHTML=st.rows.map((r,i)=>`<tr><td>${i+1}</td><td>${r.V.toFixed(2)}</td><td>${r.I.toFixed(2)}</td><td>${r.R.toFixed(1)}</td></tr>`).join('')||'<tr><td colspan="4">এখনো রিডিং নেই</td></tr>';
+    const pts=st.rows.map(r=>[r.V,r.I]);
+    let sl=0;if(pts.length){const sxy=pts.reduce((a,p)=>a+p[0]*p[1],0),sxx=pts.reduce((a,p)=>a+p[0]*p[0],0);sl=sxy/sxx;}
+    plot(q('#cv'),pts,'V (volt)','I (mA)',sl);
+    let v='';
+    if(st.rows.length>=3){const av=st.rows.reduce((a,r)=>a+r.R,0)/st.rows.length,dev=Math.max(...st.rows.map(r=>Math.abs(r.R-av)))/av;
+      v=dev<0.05?`<div class="m ok">✅ V/I প্রায় স্থির (গড় R = ${av.toFixed(1)} Ω, সর্বোচ্চ বিচ্যুতি ${(dev*100).toFixed(1)}%) এবং V–I গ্রাফ মূলবিন্দুগামী সরলরেখা ⇒ <b>ওহমের সূত্র যাচাই হলো</b>। (নামমাত্র R = ${st.R} Ω)</div>`:`<div class="m warn">V/I স্থির নয় (বিচ্যুতি ${(dev*100).toFixed(1)}%) — তাপমাত্রা বদলেছে নাকি রেজিস্টর পরিবর্তন করেছ? রেজিস্টর অপরিবর্তিত রেখে আবার চেষ্টা করো।</div>`;}
+    else v='<div class="m info">কমপক্ষে ৩–৫টি ভিন্ন ভোল্টেজে রিডিং নাও।</div>';
+    q('#vd').innerHTML=v;
+  }
+  q('#rec').onclick=()=>{
+    const c=calc();
+    if(!st.on||!c.s.closed)return toast('আগে সার্কিট সম্পূর্ণ করো (তার ১, ২, ৩) ও সাপ্লাই চালু করো।');
+    if(c.V===null)return toast('ভোল্টমিটারের দুই প্রোব (তার ৪, ৫) লাগাও।');
+    if(c.V<0.01)return toast('ভোল্টেজ প্রায় ০ — ভোল্টেজ বাড়াও।');
+    let I=c.s.I*1000;if(st.noise)I*=1+(Math.random()-.5)*.02;
+    st.rows.push({V:c.V,I,R:c.V/(I/1000)});table();
+  };
+  q('#clr').onclick=()=>{st.rows=[];table()};
+  tools(root,st,update);update();table();
+}
+
+/* ---------- 2. KVL ---------- */
+function kvl(root){
+  const st={w:{a:0,b:0,w2:0,w4:0},E:10,R:[100,220],on:true,probe:[1,2],rows:[{}],hint:false};
+  const nm={a:'তার ১',b:'তার ২',w2:'তার ৩',w4:'তার ৪'};
+  const P=[{id:'S+',lab:'সাপ্লাই (+)',n:0,x:90,y:110},{id:'R1L',lab:'R1-বাম',n:3,x:330,y:110},{id:'R1R',lab:'R1-ডান',n:4,x:410,y:110},{id:'R2L',lab:'R2-বাম',n:5,x:470,y:110},{id:'R2R',lab:'R2-ডান',n:6,x:550,y:110},{id:'S-',lab:'সাপ্লাই (−)',n:7,x:90,y:330}];
+  root.innerHTML=page(DOC.kvl,
+  `<div class="ctl"><label>⚡ সাপ্লাই E: <b id="vE"></b></label><input type="range" id="iE" min="0" max="15" step="0.5" value="10"></div>
+   <div class="ctl"><label>R₁</label><select id="r0">${opts(RS,100)}</select></div>
+   <div class="ctl"><label>R₂</label><select id="r1">${opts(RS,220)}</select></div>
+   <div class="ctl"><label>🔌 সাপ্লাই সুইচ</label><button id="bP" class="pri"></button></div>
+   <div class="ctl"><label>🔴⚫ ভোল্টমিটার প্রোব</label><button id="bPr">প্রোব রিসেট</button></div>`,
+  `<h3>📊 পর্যবেক্ষণ সারণি</h3><div class="toolbar"><button id="rec" class="pri">📥 রিডিং লিখো</button><button id="nr">➕ নতুন সারি</button><button id="clr">🗑 মুছো</button></div>
+   <div class="tbl"><table><thead><tr><th>ক্র.</th><th>E (V)</th><th>V₁</th><th>V₂</th><th>I (mA)</th><th>ΣV = V₁+V₂</th><th>E − ΣV</th></tr></thead><tbody id="tb"></tbody></table></div><div id="vd" class="status"></div>`);
+  const q=s=>root.querySelector(s);
+  function calc(){
+    const E=st.on?st.E:0;
+    const els=[{t:'w',on:st.w.a},{t:'a'},{t:'w',on:st.w.b},{t:'r',R:st.R[0]},{t:'w',on:st.w.w2},{t:'r',R:st.R[1]},{t:'w',on:st.w.w4}];
+    const s=solve(els,E);
+    let V=null,state='none';
+    if(st.probe.length===2){const a=s.pot[P[st.probe[0]].n],b=s.pot[P[st.probe[1]].n];if(a===null||b===null)state='ol';else{V=a-b;state='ok'}}
+    return {E,s,V,state};
+  }
+  function update(){
+    const c=calc(),s=c.s,pr=st.probe;
+    q('#vE').textContent=st.E.toFixed(1)+' V';
+    q('#bP').textContent=st.on?'🟢 চালু (ON) — বন্ধ করো':'⚫ বন্ধ (OFF) — চালু করো';
+    let o=supply(90,110,330,fV(st.E),st.on,'DC সাপ্লাই');
+    o+=W(st,'a',1,'M90,110 H194','#dc2626',142,110);
+    o+=meter(230,110,'A',s.closed?fI(s.I):'0.0 mA','h');
+    o+=W(st,'b',2,'M266,110 H330','#dc2626',298,110);
+    o+=res(330,110,410,110,'R1 = '+fR(st.R[0]));
+    o+=W(st,'w2',3,'M410,110 H470','#dc2626',440,110);
+    o+=res(470,110,550,110,'R2 = '+fR(st.R[1]));
+    o+=W(st,'w4',4,'M550,110 H760 V330 H90','#111827',760,220);
+    if(pr[0]!==undefined)o+=`<path d="M420,214 L${P[pr[0]].x},${P[pr[0]].y}" stroke="#dc2626" stroke-width="4" stroke-dasharray="7 3" fill="none" pointer-events="none"/>`;
+    if(pr[1]!==undefined)o+=`<path d="M420,286 L${P[pr[1]].x},${P[pr[1]].y}" stroke="#111827" stroke-width="4" stroke-dasharray="7 3" fill="none" pointer-events="none"/>`;
+    o+=`<text x="420" y="195" class="sm" text-anchor="middle" fill="#7c3aed" style="font-weight:700">ভোল্টমিটার (V) — সমান্তরালে</text>`;
+    o+=meter(420,250,'V',c.state==='ok'?fV(c.V):(c.state==='ol'?'OL':'— —'),'v');
+    P.forEach((p,i)=>{const r=pr[0]===i,b=pr[1]===i;
+      o+=`<g class="probe" data-i="${i}"><title>${p.lab} — প্রোব বসাতে ক্লিক করো</title><circle cx="${p.x}" cy="${p.y}" r="11" fill="${r?'#dc2626':b?'#111827':'#fff'}" stroke="${r?'#dc2626':b?'#111827':'#2563eb'}" stroke-width="3"/>${(r||b)?`<text x="${p.x}" y="${p.y-18}" class="sm" fill="${r?'#dc2626':'#111827'}">${r?'লাল':'কালো'}</text>`:''}</g>`;});
+    o+=`<text x="420" y="320" class="sm" text-anchor="middle">ড্যাশ লাইন = ভোল্টমিটারের প্রোব লিড | বিন্দুতে ক্লিক করে মাপার স্থান বদলাও</text>`;
+    const m=[];
+    if(!st.on)m.push(['warn','সাপ্লাই বন্ধ (OFF) — সব ভোল্টেজ ০।']);
+    const miss=Object.keys(nm).filter(k=>!st.w[k]);
+    if(miss.length)m.push(['bad','লুপ খোলা! জোড়া নেই: '+miss.map(k=>nm[k]).join(', ')+' ⇒ I = ০, কোনো রেজিস্টরে ভোল্টেজ ড্রপ নেই।']);
+    else if(st.on&&st.E>0){const R=st.R.reduce((a,b)=>a+b,0);m.push(['ok',`লুপ সম্পূর্ণ ✔ &nbsp; I = E/(R₁+R₂) = ${st.E}/${R} = ${fI(s.I)}`]);}
+    if(pr.length)m.push(['info',`লাল প্রোব: <b>${P[pr[0]].lab}</b>${pr[1]!==undefined?` &nbsp;|&nbsp; কালো প্রোব: <b>${P[pr[1]].lab}</b>`:' — এখন কালো প্রোবের বিন্দুতে ক্লিক করো'}`]);
+    else m.push(['info','ভোল্টেজ মাপতে সার্কিটের ছোট বৃত্তে ক্লিক করে ভোল্টমিটারের প্রোব বসাও।']);
+    if(c.state==='ol')m.push(['warn','এই বিন্দুর বিভব নির্ধারিত নয় (সার্কিট খোলা) — মিটার OL দেখায়।']);
+    if(c.state==='ok'&&c.V<-0.005)m.push(['warn','মিটার ঋণাত্মক দেখাচ্ছে — প্রোব উল্টো! লাল প্রোব বেশি ধনাত্মক বিন্দুতে দাও।']);
+    paint(root,st,o,m,update);
+    root.querySelectorAll('.probe').forEach(g=>g.onclick=()=>{const i=+g.dataset.i;if(st.probe.length>=2)st.probe=[i];else if(st.probe[0]===i)st.probe=[];else st.probe.push(i);update();});
+    table();
+  }
+  const MAP={'R1L>R1R':'V1','R2L>R2R':'V2','S+>S-':'E'};
+  function table(){
+    const f=x=>x===undefined?'—':x.toFixed(2);
+    q('#tb').innerHTML=st.rows.map((r,i)=>{const full=['V1','V2'].every(k=>r[k]!==undefined),sum=full?r.V1+r.V2:undefined;
+      return `<tr><td>${i+1}</td><td>${f(r.E)}</td><td>${f(r.V1)}</td><td>${f(r.V2)}</td><td>${r.I===undefined?'—':r.I.toFixed(1)}</td><td>${f(sum)}</td><td>${(sum!==undefined&&r.E!==undefined)?(r.E-sum).toFixed(3):'—'}</td></tr>`;}).join('');
+    const done=st.rows.filter(r=>['E','V1','V2'].every(k=>r[k]!==undefined));
+    q('#vd').innerHTML=done.length?done.map(r=>{const d=Math.abs(r.E-(r.V1+r.V2));return `<div class="m ${d<0.05*r.E+0.02?'ok':'warn'}">E = ${r.E.toFixed(2)} V, V₁+V₂ = ${(r.V1+r.V2).toFixed(2)} V ⇒ ${d<0.05*r.E+0.02?'<b>KVL যাচাই হলো ✔</b> (E ≈ ΣV)':'পার্থক্য বেশি — রিডিং আবার নাও'}</div>`}).join(''):'<div class="m info">E, V₁, V₂ — তিনটি মান একই সারিতে নিলে ফলাফল দেখাবে।</div>';
+  }
+  q('#iE').oninput=e=>{st.E=+e.target.value;update()};
+  [0,1].forEach(i=>q('#r'+i).onchange=e=>{st.R[i]=+e.target.value;update()});
+  q('#bP').onclick=()=>{st.on=!st.on;update()};
+  q('#bPr').onclick=()=>{st.probe=[];update()};
+  q('#rec').onclick=()=>{
+    const c=calc();
+    if(st.probe.length<2)return toast('আগে ভোল্টমিটারের লাল ও কালো প্রোব বসাও.');
+    const key=P[st.probe[0]].id+'>'+P[st.probe[1]].id;
+    if(!MAP[key]){const rev=Object.keys(MAP).find(k=>k.split('>').reverse().join('>')===key);return toast(rev?'প্রোব উল্টো — লাল প্রোব বাম/(+) দিকে, কালো ডান/(−) দিকে দাও।':'R₁, R₂-এর দুই প্রান্ত বা সাপ্লাইয়ের (+)/(−) এর মধ্যে মাপো।');}
+    if(c.state!=='ok'||!c.s.closed||!st.on)return toast('সার্কিট সম্পূর্ণ করে সাপ্লাই চালু করো।');
+    const r=st.rows[st.rows.length-1];r[MAP[key]]=c.V;r.I=c.s.I*1000;table();
+  };
+  q('#nr').onclick=()=>{st.rows.push({});table()};
+  q('#clr').onclick=()=>{st.rows=[{}];table()};
+  tools(root,st,update);update();
+}
+
+/* ---------- 3. KCL ---------- */
+function kcl(root){
+  const st={w:{s1:0,s2:0,r:0,k1a:0,k1c:0,k2a:0,k2c:0},E:5,R:[220,330],on:true,rows:[],hint:false};
+  root.innerHTML=page(DOC.kcl,
+  `<div class="ctl"><label>⚡ সাপ্লাই E: <b id="vE"></b></label><input type="range" id="iE" min="0" max="12" step="0.5" value="5"></div>
+   <div class="ctl"><label>R₁</label><select id="r0">${opts(RS,220)}</select></div>
+   <div class="ctl"><label>R₂</label><select id="r1">${opts(RS,330)}</select></div>
+   <div class="ctl"><label>🔌 সাপ্লাই সুইচ</label><button id="bP" class="pri"></button></div>`,
+  `<h3>📊 পর্যবেক্ষণ সারণি</h3><div class="toolbar"><button id="rec" class="pri">📥 রিডিং নাও</button><button id="clr">🗑 মুছো</button></div>
+   <div class="tbl"><table><thead><tr><th>ক্র.</th><th>E (V)</th><th>I_T (mA)</th><th>I₁</th><th>I₂</th><th>I₁+I₂</th><th>I_T − ΣI</th></tr></thead><tbody id="tb"></tbody></table></div><div id="vd" class="status"></div>`);
+  const q=s=>root.querySelector(s);
+  function calc(){
+    const E=st.on?st.E:0,main=st.w.s1&&st.w.s2&&st.w.r;
+    const I=[1,2].map(k=>(main&&st.w['k'+k+'a']&&st.w['k'+k+'c'])?E/st.R[k-1]:0);
+    return {E,main,I,IT:I[0]+I[1]};
+  }
+  function update(){
+    const c=calc(),X=[450,600];
+    q('#vE').textContent=st.E.toFixed(1)+' V';
+    q('#bP').textContent=st.on?'🟢 চালু (ON) — বন্ধ করো':'⚫ বন্ধ (OFF) — চালু করো';
+    let o=supply(80,100,340,fV(st.E),st.on,'DC সাপ্লাই');
+    o+=`<rect x="300" y="94" width="400" height="12" rx="4" fill="#fca5a5"/><rect x="300" y="334" width="400" height="12" rx="4" fill="#cbd5e1"/><text x="500" y="82" class="sm">উপরের বাস রেল (জংশন A)</text><text x="500" y="366" class="sm">নিচের বাস রেল (জংশন B)</text>`;
+    o+=W(st,'s1',1,'M80,100 H154','#dc2626',117,100);
+    o+=meter(190,100,'A',c.main?fI(c.IT):'0.0 mA','h','I_T');
+    o+=W(st,'s2',2,'M226,100 H300','#dc2626',263,100);
+    o+=W(st,'r',3,'M300,340 H80','#111827',190,340);
+    const warn=[];
+    X.forEach((x,i)=>{const k=i+1,burn=(st.E*st.E/st.R[i])>0.25&&st.on;if(burn)warn.push(k);
+      o+=W(st,'k'+k+'a',4+2*i,`M${x},100 V134`,'#dc2626',x,117);
+      o+=meter(x,170,'A',fI(c.I[i]),'v','I'+k);
+      o+=`<line x1="${x}" y1="206" x2="${x}" y2="240" stroke="#475569" stroke-width="5"/>`;
+      o+=res(x,240,x,310,'R'+k+' = '+fR(st.R[i]),burn);
+      o+=W(st,'k'+k+'c',5+2*i,`M${x},310 V340`,'#111827',x,325);});
+    const m=[];
+    if(!st.on)m.push(['warn','সাপ্লাই বন্ধ (OFF) — সব কারেন্ট ০।']);
+    const mm=['s1','s2','r'].filter(k=>!st.w[k]);
+    if(mm.length)m.push(['bad',`মূল লাইনের তার (${mm.map(k=>'তার '+bnD({s1:1,s2:2,r:3}[k])).join(', ')}) জোড়া নেই ⇒ কোনো শাখায় কারেন্ট নেই।`]);
+    [1,2].forEach(k=>{if(c.main&&st.on&&!(st.w['k'+k+'a']&&st.w['k'+k+'c']))m.push(['warn',`শাখা ${bnD(k)} খোলা (তার ${bnD(2+2*k)}/${bnD(3+2*k)} দেখো) ⇒ I${bnD(k)} = ০।`]);});
+    if(c.main&&st.on&&c.IT>0)m.push(['ok',`জংশন A: আসছে I_T = ${fI(c.IT)} &nbsp;|&nbsp; যাচ্ছে I₁+I₂ = ${fI(c.I[0]+c.I[1])} ⇒ <b>KCL সিদ্ধ ✔</b>`]);
+    if(warn.length)m.push(['bad',`⚠ R${warn.map(bnD).join(', R')} অতিরিক্ত গরম (P = E²/R > ০.২৫ W)! ভোল্টেজ কমাও।`]);
+    paint(root,st,o,m,update);
+  }
+  function table(){
+    q('#tb').innerHTML=st.rows.map((r,i)=>{const sum=r.I1+r.I2;return `<tr><td>${i+1}</td><td>${r.E.toFixed(1)}</td><td>${r.IT.toFixed(1)}</td><td>${r.I1.toFixed(1)}</td><td>${r.I2.toFixed(1)}</td><td>${sum.toFixed(1)}</td><td>${(r.IT-sum).toFixed(2)}</td></tr>`}).join('');
+    q('#vd').innerHTML=st.rows.length?`<div class="m ok">সবগুলো সারিতে I_T ≈ I₁+I₂ ⇒ <b>কির্শফের কারেন্ট সূত্র (KCL) যাচাই হলো ✔</b></div>`:'<div class="m info">সব তার জোড়া দিয়ে সাপ্লাই চালু করে “রিডিং নাও” চাপো।</div>';
+  }
+  q('#iE').oninput=e=>{st.E=+e.target.value;update()};
+  [0,1].forEach(i=>q('#r'+i).onchange=e=>{st.R[i]=+e.target.value;update()});
+  q('#bP').onclick=()=>{st.on=!st.on;update()};
+  q('#rec').onclick=()=>{
+    const c=calc();
+    if(!st.on||!c.main||c.I.some(v=>v===0))return toast('সব তার (১–৭) জোড়া দিয়ে সাপ্লাই চালু করো, তারপর রিডিং নাও।');
+    st.rows.push({E:st.E,IT:c.IT*1000,I1:c.I[0]*1000,I2:c.I[1]*1000});table();
+  };
+  q('#clr').onclick=()=>{st.rows=[];table()};
+  tools(root,st,update);update();table();
+}
+
+/* ---------- 4. SUPERPOSITION ---------- */
+function sup(root){
+  const st={w:{w1a:0,w1b:0,w2a:0,w2b:0,w3a:0,w3c:0},V1:10,V2:5,m1:'on',m2:'on',R:[100,220,330],rec:{},hint:false};
+  const MS=`<option value="on">চালু (ON)</option><option value="short">শর্ট (তার বসাও)</option><option value="open">খোলা (বিচ্ছিন্ন)</option>`;
+  root.innerHTML=page(DOC.sup,
+  `<div class="ctl"><label>⚡ V₁: <b id="v1"></b></label><input type="range" id="iV1" min="0" max="15" step="0.5" value="10"><label>V₁ মোড</label><select id="m1">${MS}</select></div>
+   <div class="ctl"><label>⚡ V₂: <b id="v2"></b></label><input type="range" id="iV2" min="0" max="15" step="0.5" value="5"><label>V₂ মোড</label><select id="m2">${MS}</select></div>
+   <div class="ctl"><label>R₁</label><select id="r0">${opts(RS,100)}</select><label>R₂</label><select id="r1">${opts(RS,220)}</select><label>R₃</label><select id="r2">${opts(RS,330)}</select></div>`,
+  `<h3>📊 পর্যবেক্ষণ সারণি</h3><div class="toolbar"><button id="rec" class="pri">📥 রিডিং নাও (বর্তমান মোডে)</button><button id="clr">🗑 মুছো</button></div>
+   <div class="tbl"><table><thead><tr><th>অবস্থা</th><th>V₁ মোড</th><th>V₂ মোড</th><th>মিটারে I₃ (mA)</th><th>তাত্ত্বিক I₃ (mA)</th></tr></thead><tbody id="tb"></tbody></table></div><div id="vd" class="status"></div>`);
+  const q=s=>root.querySelector(s);
+  function calc(){
+    const [R1,R2,R3]=st.R,w=st.w;
+    const g1=(w.w1a&&w.w1b&&st.m1!=='open')?1/R1:0,g2=(w.w2a&&w.w2b&&st.m2!=='open')?1/R2:0,g3=(w.w3a&&w.w3c)?1/R3:0;
+    const E1=st.m1==='on'?st.V1:0,E2=st.m2==='on'?st.V2:0,d=g1+g2+g3;
+    const VN=d>0?(g1*E1+g2*E2)/d:0;
+    return {I3:g3*VN,g3};
+  }
+  function th(cfg){const [R1,R2,R3]=cfg.R;
+    return {p:cfg.V1/(R1+R2*R3/(R2+R3))*R2/(R2+R3),q:cfg.V2/(R2+R1*R3/(R1+R3))*R1/(R1+R3)};}
+  function update(){
+    const c=calc();
+    q('#v1').textContent=st.V1.toFixed(1)+' V';q('#v2').textContent=st.V2.toFixed(1)+' V';
+    let o=`<rect x="60" y="334" width="700" height="12" rx="4" fill="#cbd5e1"/><text x="410" y="372" class="sm">কমন (−) / ভূমি বাস রেল</text>`;
+    o+=supply(90,130,340,st.m1==='short'?'0.00 V':fV(st.V1),st.m1==='on','V₁',st.m1);
+    o+=supply(730,130,340,st.m2==='short'?'0.00 V':fV(st.V2),st.m2==='on','V₂',st.m2);
+    o+=W(st,'w1a',1,'M90,130 H170','#dc2626',130,130);
+    o+=res(170,130,250,130,'R1 = '+fR(st.R[0]));
+    o+=W(st,'w1b',2,'M250,130 H400','#dc2626',325,130);
+    o+=W(st,'w2a',3,'M730,130 H650','#dc2626',690,130);
+    o+=res(650,130,570,130,'R2 = '+fR(st.R[1]));
+    o+=W(st,'w2b',4,'M570,130 H400','#dc2626',485,130);
+    o+=`<circle cx="400" cy="130" r="6" fill="#334155"/><text x="400" y="112" class="sm">N</text>`;
+    o+=W(st,'w3a',5,'M400,130 V162','#dc2626',400,146);
+    o+=meter(400,198,'A',fI(c.I3),'v','I₃');
+    o+=`<line x1="400" y1="234" x2="400" y2="250" stroke="#475569" stroke-width="5"/>`;
+    o+=res(400,250,400,310,'R3 = '+fR(st.R[2]));
+    o+=W(st,'w3c',6,'M400,310 V340','#111827',400,325);
+    const m=[];
+    const miss=Object.keys(st.w).filter(k=>!st.w[k]);
+    if(miss.length)m.push(['warn',`জোড়া নেই: তার ${miss.map(k=>bnD({w1a:1,w1b:2,w2a:3,w2b:4,w3a:5,w3c:6}[k])).join(', ')}`]);
+    if(st.m1==='open'||st.m2==='open')m.push(['bad','❌ ভোল্টেজ সোর্স “খোলা” করা ভুল! নিষ্ক্রিয় ভোল্টেজ সোর্সের জায়গায় তার দিয়ে <b>শর্ট</b> করতে হয় (অভ্যন্তরীণ রোধ ≈ ০)। খোলা রাখলে সুপারপজিশন মিলবে না।']);
+    if(st.m1==='on'&&st.m2==='short')m.push(['info','শুধু V₁ কাজ করছে (V₂ শর্ট) ⇒ এটি I₃′।']);
+    else if(st.m1==='short'&&st.m2==='on')m.push(['info','শুধু V₂ কাজ করছে (V₁ শর্ট) ⇒ এটি I₃″।']);
+    else if(st.m1==='on'&&st.m2==='on')m.push(['info','দুটো সোর্সই চালু ⇒ এটি পূর্ণ I₃।']);
+    else if(st.m1==='short'&&st.m2==='short')m.push(['warn','দুটো সোর্সই শর্ট ⇒ কোনো উৎস নেই, I₃ = ০।']);
+    if(c.g3&&c.I3>0)m.push(['ok',`I₃ (মিটার) = ${fI(c.I3)}`]);
+    paint(root,st,o,m,update);
+  }
+  function table(){
+    const lab={p:['V₁ একা (V₂ শর্ট) ⇒ I₃′','on','short'],pp:['V₂ একা (V₁ শর্ট) ⇒ I₃″','short','on'],both:['দুটোই চালু ⇒ I₃','on','on']};
+    q('#tb').innerHTML=['p','pp','both'].map(k=>{const r=st.rec[k];let t='—';
+      if(r){const T=th(r.cfg);t=((k==='p'?T.p:k==='pp'?T.q:T.p+T.q)*1000).toFixed(2);}
+      return `<tr><td class="l">${lab[k][0]}</td><td>${lab[k][1]==='on'?'চালু':'শর্ট'}</td><td>${lab[k][2]==='on'?'চালু':'শর্ট'}</td><td>${r?r.I.toFixed(2):'—'}</td><td>${t}</td></tr>`}).join('');
+    const {p,pp,both}=st.rec;let v='<div class="m info">তিনটি অবস্থাই (A, B, C) একই V₁, V₂, R-এ রেকর্ড করো।</div>';
+    if(p&&pp&&both){const same=[pp,both].every(r=>JSON.stringify(r.cfg)===JSON.stringify(p.cfg));
+      if(!same)v='<div class="m warn">তিনটি রিডিংয়ে V₁, V₂ বা R আলাদা ছিল — একই মানে আবার রেকর্ড করো।</div>';
+      else{const s=p.I+pp.I,err=Math.abs(s-both.I)/both.I*100;
+        v=`<div class="m ${err<3?'ok':'warn'}">I₃′ + I₃″ = ${p.I.toFixed(2)} + ${pp.I.toFixed(2)} = <b>${s.toFixed(2)} mA</b> &nbsp;|&nbsp; I₃ (দুটো একসাথে) = <b>${both.I.toFixed(2)} mA</b> ⇒ ত্রুটি ${err.toFixed(2)}% ${err<3?'— <b>সুপারপজিশন উপপাদ্য যাচাই হলো ✔</b>':'— পার্থক্য বেশি, আবার চেষ্টা করো'}</div>`;}}
+    q('#vd').innerHTML=v;
+  }
+  q('#iV1').oninput=e=>{st.V1=+e.target.value;update()};
+  q('#iV2').oninput=e=>{st.V2=+e.target.value;update()};
+  q('#m1').onchange=e=>{st.m1=e.target.value;update()};
+  q('#m2').onchange=e=>{st.m2=e.target.value;update()};
+  [0,1,2].forEach(i=>q('#r'+i).onchange=e=>{st.R[i]=+e.target.value;update()});
+  q('#rec').onclick=()=>{
+    const c=calc(),key=st.m1==='on'&&st.m2==='short'?'p':st.m1==='short'&&st.m2==='on'?'pp':st.m1==='on'&&st.m2==='on'?'both':null;
+    if(!key)return toast('V₁/V₂ মোড “চালু” বা “শর্ট” রাখো (খোলা নয়) — তারপর রেকর্ড করো।');
+    const w=st.w;
+    if(!(w.w3a&&w.w3c))return toast('মাঝের শাখার তার ৫ ও ৬ জোড়া দাও।');
+    if(key!=='pp'&&!(w.w1a&&w.w1b))return toast('V₁-এর শাখার তার ১ ও ২ জোড়া দাও।');
+    if(key!=='p'&&!(w.w2a&&w.w2b))return toast('V₂-এর শাখার তার ৩ ও ৪ জোড়া দাও।');
+    if(!(w.w1a&&w.w1b&&w.w2a&&w.w2b))return toast('শর্ট-করা সোর্সের শাখাও সম্পূর্ণ জোড়া দিতে হবে (তার ১–৪)।');
+    st.rec[key]={I:c.I3*1000,cfg:{V1:st.V1,V2:st.V2,R:st.R.slice()}};table();
+  };
+  q('#clr').onclick=()=>{st.rec={};table()};
+  tools(root,st,update);update();table();
+}
+
+/* ---------- Home & Web ---------- */
+function home(root){
+  root.innerHTML=`<div class="card hero"><h2>স্বাগতম! 👋</h2><p>এই ফাইলে ইলেকট্রিক্যাল ও ইলেকট্রনিক্স ইঞ্জিনিয়ারিং (EEE) ল্যাব ফাইনালের <b>৪টি পরীক্ষা</b> বাস্তবের মতো অনুশীলনের জন্য আলাদা আলাদা পেজে সাজানো আছে। প্রতিটি পেজে আছে: শিরোনাম → সার্কিট (তার জোড়া/খোলা যায়) → লাইভ মিটার রিডিং → পর্যবেক্ষণ সারণি → বাংলায় তত্ত্ব, ধাপ, “কী করলে কী হয়”, সতর্কতা ও ভাইভা প্রশ্ন।</p></div>
+  <div class="grid">
+   <a class="c" href="#ohm"><b>১. ওহমের সূত্র</b><br>V = IR, V–I গ্রাফ, ধ্রুব তাপমাত্রার শর্ত</a>
+   <a class="c" href="#kvl"><b>২. KVL</b><br>সিরিজ লুপে E = V₁+V₂, ভোল্টমিটার প্রোব বসানো</a>
+   <a class="c" href="#kcl"><b>৩. KCL</b><br>প্যারালালে I_T = I₁+I₂, তিনটি অ্যামিটার</a>
+   <a class="c" href="#sup"><b>৪. সুপারপজিশন</b><br>I₃′ + I₃″ = I₃, উৎস শর্ট করার নিয়ম</a>
+  </div>
+  <div class="card"><h3>🧭 কীভাবে প্র্যাকটিস করবে</h3><ol>
+   <li>পরীক্ষার পেজ খোলো; শুরুতে সব তার <b>খোলা</b> (ধূসর ডটেড)।</li>
+   <li>নিচের “ধাপে ধাপে” অংশ পড়ে একটা একটা করে <b>তারে ক্লিক</b> করে জোড়া লাগাও — ঠিক ব্রেডবোর্ডে যেভাবে লাগাতে।</li>
+   <li>ভুল জোড়া দিলে বা তার খুললে কী হয় — উপরের লাল/হলুদ বার্তায় লাইভ দেখো। আটকে গেলে <b>💡 হিন্ট</b>, আর উত্তর দেখতে <b>✅ সঠিক সংযোগ দেখাও</b>।</li>
+   <li>সাপ্লাই চালু করে স্লাইডার নেড়ে রিডিং নাও, সারণি পূরণ করো, ফলাফল মেলাও।</li>
+   <li>শেষে “ভাইভা প্রশ্ন” নিজেকে জিজ্ঞেস করো।</li></ol></div>
+  <div class="card"><h3>📝 ল্যাব ফাইনালের জন্য কিছু টিপস</h3><ul>
+   <li><b>সবসময়:</b> তার জোড়ার আগে সাপ্লাই OFF • অ্যামিটার সিরিজে • ভোল্টমিটার প্যারালালে • লাল (+), কালো (−)।</li>
+   <li>রিপোর্টে থাকতে হবে: উদ্দেশ্য, তত্ত্ব, যন্ত্রপাতি, সার্কিট ডায়াগ্রাম, পদ্ধতি, সারণি, গণনা/গ্রাফ, ফলাফল, আলোচনা (ত্রুটির উৎস)।</li>
+   <li>ত্রুটির সাধারণ উৎস: মিটারের নির্ভুলতা, রেজিস্টরের টলারেন্স (±৫%), তারের/কন্টাক্ট রোধ, গরম হয়ে রোধ বদল, রিডিং পড়ার ভুল।</li>
+   <li>“Bishop's current law” নয় — সঠিক নাম <b>Kirchhoff's Current Law (KCL)</b>।</li></ul></div>`;
+}
+function web(root){
+  const L=[
+   ['PhET — Circuit Construction Kit: DC (Virtual Lab)','https://phet.colorado.edu/en/simulations/circuit-construction-kit-dc-virtual-lab','ব্যাটারি, রেজিস্টর, সুইচ দিয়ে সার্কিট বানিয়ে অ্যামিটার/ভোল্টমিটারে রিডিং নেওয়া যায়। সিরিজ-প্যারালাল, ওহমের সূত্র ও কির্শফের সূত্রের জন্য সবচেয়ে সহজ ও বিনামূল্যে — <b>প্রথমে এটি চেষ্টা করো।</b>'],
+   ['Falstad CircuitJS (ব্রাউজারে সার্কিট সিমুলেটর)','https://www.falstad.com/circuit/','কারেন্ট চলার অ্যানিমেশনসহ লাইভ সিমুলেশন; ওহমের সূত্র ও সিরিজ-প্যারালাল উদাহরণ আছে। ইনস্টল লাগে না।'],
+   ['CircuitLab','https://www.circuitlab.com/','ব্রাউজারে স্কেমেটিক এঁকে DC সিমুলেশন করা যায়; KVL/KCL/সুপারপজিশন সার্কিট নিজে আঁকার জন্য ভালো।'],
+   ['EveryCircuit','https://everycircuit.com/','ইন্টারঅ্যাক্টিভ সিমুলেটর; KVL ও KCL যাচাইয়ের অনেক প্রস্তুত সার্কিট (কমিউনিটি) আছে।'],
+   ['Tinkercad Circuits (Autodesk)','https://www.tinkercad.com/circuits','ভার্চুয়াল ব্রেডবোর্ড, মাল্টিমিটার ও পাওয়ার সাপ্লাই — বাস্তব ব্রেডবোর্ডে তার লাগানোর অভ্যাসের জন্য ভালো (ফ্রি অ্যাকাউন্ট লাগে)।'],
+   ['Circuit Solver (ডেস্কটপ/ওয়েব)','https://www.alternativeto.net/software/circuit-solver-web/about/','ওহমের সূত্র, KVL, KCL যাচাইয়ের জন্য মডেল সিমুলেটর হিসেবে তালিকাভুক্ত — বিবরণ ও বিকল্প দেখতে লিংকটি খোলো।']];
+  root.innerHTML=`<div class="card hero"><h2>🌐 অনলাইনে আরও প্র্যাকটিসের সাইট</h2><p>এগুলো ব্রাউজারেই চলে। প্রতিটিতে একই চারটি পরীক্ষার সার্কিট বানিয়ে মিলিয়ে দেখতে পারো।</p></div>`+
+   L.map(([t,u,d])=>`<div class="card"><h3><a href="${u}" target="_blank" rel="noopener">${t} ↗</a></h3><p>${d}</p></div>`).join('')+
+   `<div class="card"><h3>💡 প্র্যাকটিস আইডিয়া</h3><ul><li>PhET-এ ১০ V ব্যাটারি + ২টি রেজিস্টর সিরিজে বানিয়ে KVL দেখো।</li><li>২টি রেজিস্টর প্যারালালে বানিয়ে প্রতি শাখায় অ্যামিটার বসিয়ে KCL দেখো।</li><li>দুই ব্যাটারিসহ সার্কিটে একটি ব্যাটারি সরিয়ে তার বসিয়ে (শর্ট) সুপারপজিশন করো।</li></ul></div>`;
+}
+
+/* ---------- router ---------- */
+const routes={home,ohm,kvl,kcl,sup,web};
+function route(){
+  const r=(location.hash||'#home').slice(1),k=routes[r]?r:'home';
+  document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('act',a.dataset.r===k));
+  routes[k](document.getElementById('page'));window.scrollTo(0,0);
+}
+addEventListener('hashchange',route);route();
+</script>
+</body>
+</html>
